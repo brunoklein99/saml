@@ -51,26 +51,26 @@ type Middleware struct {
 // m.ServiceProvider.AcsURL.
 func (m *Middleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == m.ServiceProvider.MetadataURL.Path {
-		m.serveMetadata(w, r)
+		m.ServeMetadata(w, r)
 		return
 	}
 
 	if r.URL.Path == m.ServiceProvider.AcsURL.Path {
-		m.serveACS(w, r)
+		m.ServeAcs(w, r)
 		return
 	}
 
 	http.NotFoundHandler().ServeHTTP(w, r)
 }
 
-func (m *Middleware) serveMetadata(w http.ResponseWriter, r *http.Request) {
+func (m *Middleware) ServeMetadata(w http.ResponseWriter, r *http.Request) {
 	buf, _ := xml.MarshalIndent(m.ServiceProvider.Metadata(), "", "  ")
 	w.Header().Set("Content-Type", "application/samlmetadata+xml")
 	w.Write(buf)
 	return
 }
 
-func (m *Middleware) serveACS(w http.ResponseWriter, r *http.Request) {
+func (m *Middleware) ServeAcs(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 
 	possibleRequestIDs := []string{}
